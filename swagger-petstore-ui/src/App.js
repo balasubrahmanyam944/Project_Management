@@ -99,7 +99,7 @@ useEffect(() => {
     }
   };
 
-  const handleBulkRefresh = useCallback(() => {
+  const handleBulkRefresh = useCallback(async () => {
     const refreshPromises = [];
     let totalBugs = 0;
     const bugsByStatus = {};
