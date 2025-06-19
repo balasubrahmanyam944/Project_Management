@@ -131,10 +131,8 @@ useEffect(() => {
 
     // Wait for all refreshes to complete
     await Promise.all(refreshPromises);
-
     // Update bugs data with collected totals
     handleStatusChange(totalBugs, bugsByStatus);
-
     return true;
   };
 
@@ -759,7 +757,7 @@ Object.values(endpointRefs.current).forEach(ref => {
                     </>
                   )}
                 </div>
-              ), (
+              ) : (
                 // For UI-generated test cases, show separate request and response
                 <>
                   <div className="test-case-section">
