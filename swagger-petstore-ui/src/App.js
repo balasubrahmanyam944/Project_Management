@@ -1,5 +1,5 @@
 // App.js
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { openApiSpec } from './openapispecs';
 import EndpointCard from './components/EndpointCard';
 import PieCharts from './PieCharts';
