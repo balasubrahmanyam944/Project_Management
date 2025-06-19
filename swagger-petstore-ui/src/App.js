@@ -27,6 +27,13 @@ const App = () => {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme || 'light';
   });
+useEffect(() => {
+  handleBulkRefresh();
+}, []);
+
+useEffect(() => {
+  handleModalRefresh();
+}, [handleModalRefresh]);
 
   // Initialize refs for each endpoint
   useEffect(() => {
@@ -69,12 +76,12 @@ const App = () => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  const mergeStatuses = (oldStatuses, newStatuses) => {
-    return {
-      ...oldStatuses,
-      ...newStatuses
-    };
-  };
+  // const mergeStatuses = (oldStatuses, newStatuses) => {
+  //   return {
+  //     ...oldStatuses,
+  //     ...newStatuses
+  //   };
+  // };
   const handleStatusChange = (totalBugs, bugsByStatus) => {
     setBugsData(prev => ({
       totalBugs: totalBugs || prev.totalBugs,
@@ -92,7 +99,7 @@ const App = () => {
     }
   };
 
-  const handleBulkRefresh = async () => {
+  const handleBulkRefresh = useCallback(() => {
     const refreshPromises = [];
     let totalBugs = 0;
     const bugsByStatus = {};
