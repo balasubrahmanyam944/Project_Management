@@ -126,7 +126,7 @@ useEffect(() => {
             }
           }
         }
-      }
+      }s
     }
 
     // Wait for all refreshes to complete
@@ -134,7 +134,7 @@ useEffect(() => {
     // Update bugs data with collected totals
     handleStatusChange(totalBugs, bugsByStatus);
     return true;
-  };
+  )};
 
   const handleShowAllTestCases = async () => {
     try {
