@@ -126,7 +126,7 @@ useEffect(() => {
             }
           }
         }
-      }s
+      }
     }
 
     // Wait for all refreshes to complete
