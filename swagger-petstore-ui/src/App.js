@@ -99,42 +99,46 @@ useEffect(() => {
     }
   };
 
-  const handleBulkRefresh = useCallback(async () => {
-    const refreshPromises = [];
-    let totalBugs = 0;
-    const bugsByStatus = {};
-    
-    // First, collect all refresh promises and update statuses
-    for (const ref of Object.values(endpointRefs.current)) {
-      if (ref.current) {
-        const testCases = ref.current.getTestCases();
-        if (testCases) {
-          for (const tc of testCases) {
-            if (tc.isBug && tc.jiraIssueId) {
-              refreshPromises.push(
-                ref.current.refreshStatus(tc.id).then(() => {
-                  // Get updated test case after refresh
-                  const updatedTestCase = ref.current.getTestCases().find(t => t.id === tc.id);
-                  if (updatedTestCase) {
-                    totalBugs++;
-                    // Update bug count for this status
-                    bugsByStatus[updatedTestCase.currentStatus] = 
-                      (bugsByStatus[updatedTestCase.currentStatus] || 0) + 1;
-                  }
-                })
-              );
-            }
+const handleBulkRefresh = useCallback(async () => {
+  const refreshPromises = [];
+  let totalBugs = 0;
+  const bugsByStatus = {};
+  
+  // First, collect all refresh promises and update statuses
+  for (const ref of Object.values(endpointRefs.current)) {
+    if (ref.current) {
+      const testCases = ref.current.getTestCases();
+      if (testCases) {
+        for (const tc of testCases) {
+          if (tc.isBug && tc.jiraIssueId) {
+            refreshPromises.push(
+              ref.current.refreshStatus(tc.id).then(() => {
+                // Directly access the updated test case
+                const updatedTestCase = ref.current.getTestCases().find(t => t.id === tc.id);
+                if (updatedTestCase) {
+                  totalBugs++;
+                  const currentStatus = updatedTestCase.currentStatus;
+                  // Update bug count for this status
+                  bugsByStatus[currentStatus] = (bugsByStatus[currentStatus] || 0) + 1;
+                }
+              }).catch(error => {
+                console.error(`Error refreshing status for test case ID ${tc.id}:`, error);
+              })
+            );
           }
         }
       }
     }
+  }
 
-    // Wait for all refreshes to complete
-    await Promise.all(refreshPromises);
-    // Update bugs data with collected totals
-    handleStatusChange(totalBugs, bugsByStatus);
-    return true;
-  )};
+  // Wait for all refreshes to complete
+  await Promise.all(refreshPromises);
+
+  // Update bugs data with collected totals
+  handleStatusChange(totalBugs, bugsByStatus);
+  return true;
+});
+
 
   const handleShowAllTestCases = async () => {
     try {
